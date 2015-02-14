@@ -19,7 +19,10 @@ class TestAll(unittest.TestCase):
             known='this is known')
 
     def cleanUp(self):
-        shutil.rmtree('tests/actual/all')
+        try:
+            shutil.rmtree('tests/actual/all')
+        except OSError:
+            pass
 
     def assertFilesEqual(self, expected, actual):
         with open(expected, 'rb') as fd:
@@ -66,3 +69,28 @@ class TestAll(unittest.TestCase):
         self.assertFilesEqual(
             'tests/expected/all/download_file.txt',
             'tests/actual/all/download_file.txt')
+
+    def test_pre_script(self):
+        self.assertFilesEqual(
+            'tests/expected/all/made_in_pre',
+            'tests/actual/all/made_in_pre')
+
+    def test_post_script(self):
+        self.assertFilesEqual(
+            'tests/expected/all/made_in_post',
+            'tests/actual/all/made_in_post')
+
+    def test_every_file(self):
+        for root, dirs, files in os.walk('tests/expected/all'):
+            for f in files:
+                self.assertFilesEqual(
+                    os.path.join(root, f),
+                    os.path.join(
+                        root.replace('tests/expected/all', 'tests/actual/all'),
+                        f))
+        for root, dirs, files in os.walk('tests/actual/all'):
+            for f in files:
+                self.assertTrue(os.path.isfile(
+                    os.path.join(
+                        root.replace('tests/actual/all', 'tests/expected/all'),
+                        f)))

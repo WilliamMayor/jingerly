@@ -21,8 +21,14 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
     for root, dirs, files in walk(output_dir, _ignore):
         for f in files:
             file_path = os.path.join(root, f)
+            file_name = env.from_string(f).render(
+                IN=template_dir, OUT=output_dir,
+                **kwargs)
             with open(file_path, 'rb') as fd:
                 template = env.from_string(fd.read())
+            if file_name != f:
+                os.remove(file_path)
+                file_path = os.path.join(root, file_name)
             with open(file_path, 'wb') as fd:
                 fd.write(
                     template.render(

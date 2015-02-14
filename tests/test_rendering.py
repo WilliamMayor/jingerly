@@ -52,3 +52,8 @@ class TestAll(unittest.TestCase):
         self.assertFilesEqual(
             'tests/expected/all/unknown_variables.txt',
             'tests/actual/all/unknown_variables.txt')
+
+    def test_rename_file(self):
+        self.assertFilesEqual(
+            'tests/expected/all/file_with_actual.txt',
+            'tests/actual/all/file_with_actual.txt')

@@ -153,23 +153,29 @@ The scripts are run through Jinja2 before they're executed. `jingerly.pre` scrip
 
 The easiest way to install everything is to use pip:
 
-    pip install jingerly
+    $ pip install jingerly
 
 This installs the `jingerly` command line script as well as the Python module (should you want it).
 
-If you don't want to install everything globally then you can use a virtualenv:
+If you don't want to install everything globally then you can use a virtualenv, I like to keep mine in `/usr/local`:
 
-    virtualenv venv
-    . venv/bin/activate
-    pip install jingerly
+    $ cd /usr/local
+    $ virtualenv jingerly
+    $ . jingerly/bin/activate
+    $ pip install jingerly
+    $ ln -s ../jingerly/bin/jingerly bin/jingerly
 
 Or, if you wanted to grab the source code:
 
-    git clone https://github.com/WilliamMayor/jingerly.git
-    cd jingerly
-    virtualenv venv
-    . venv/bin/activate
-    pip install -r requirements.txt
+    $ git clone https://github.com/WilliamMayor/jingerly.git
+    $ cd jingerly
+    $ virtualenv venv
+    $ . venv/bin/activate
+    $ pip install -r requirements.txt
+
+From here you can run the tests using nose:
+
+    $ nosetests
 
 ## Examples
 

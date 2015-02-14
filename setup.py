@@ -16,7 +16,7 @@ setup(
     keywords="project management template",
     url="https://github.com/WilliamMayor/jingerly",
     py_modules=['jingerly'],
-    requires=['jinja2', 'requests'],
+    install_requires=['jinja2', 'requests'],
     scripts=['bin/jingerly'],
     long_description=read('README.md'),
     classifiers=[

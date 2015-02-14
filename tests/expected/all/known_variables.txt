@@ -1,0 +1,1 @@
+In this file there is a variable known=this is known that should be replaced.

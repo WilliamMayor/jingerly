@@ -1,0 +1,2 @@
+This project template can be found in {{ IN }}
+It was rendered in {{ OUT }}

@@ -1,0 +1,1 @@
+This file should be inside a folder called folder_with_actual not {% raw %}folder_with_{{name}}{% endraw %}

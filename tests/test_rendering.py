@@ -1,3 +1,4 @@
+import os
 import unittest
 import shutil
 
@@ -55,3 +56,8 @@ class TestAll(unittest.TestCase):
         self.assertFilesEqual(
             'tests/expected/all/folder_with_actual/expected.txt',
             'tests/actual/all/folder_with_actual/expected.txt')
+
+    def test_copy_filter(self):
+        self.assertFilesEqual(
+            'tests/expected/all/copy_file.txt',
+            'tests/actual/all/copy_file.txt')

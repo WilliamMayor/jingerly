@@ -4,21 +4,32 @@ import shutil
 from jinja2 import Environment, DebugUndefined
 
 
-def walk(root, ignore):
+def __walk(root, ignore):
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = filter(lambda dn: dn not in ignore, dirnames)
         filenames = filter(lambda fn: fn not in ignore, filenames)
         yield dirpath, dirnames, filenames
 
 
+def __filter_copy(path):
+    print path
+    with open(path, 'rb') as fd:
+        return fd.read()
+
+
+def __make_env():
+    env = Environment(undefined=DebugUndefined)
+    env.filters['copy'] = __filter_copy
+    env.filters['download'] = lambda p: p
+    return env
+
+
 def render(template_dir, output_dir, _ignore=None, **kwargs):
     if _ignore is None:
         _ignore = ['.DS_Store', '.git']
-    env = Environment(undefined=DebugUndefined)
-    env.filters['copy'] = lambda p: p
-    env.filters['download'] = lambda p: p
+    env = __make_env()
     shutil.copytree(template_dir, output_dir)
-    for root, dirs, files in walk(output_dir, _ignore):
+    for root, dirs, files in __walk(output_dir, _ignore):
         for f in files:
             file_path = os.path.join(root, f)
             file_name = env.from_string(f).render(

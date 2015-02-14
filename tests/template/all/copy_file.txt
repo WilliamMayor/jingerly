@@ -1,1 +1,1 @@
-{{ IN + "/untouched.txt" | copy }}
+{{ (IN + "/untouched.txt") | copy }}

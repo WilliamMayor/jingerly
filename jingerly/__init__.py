@@ -34,3 +34,13 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
                     template.render(
                         IN=template_dir, OUT=output_dir,
                         **kwargs))
+        dir_names = []
+        for d in dirs:
+            dir_path = os.path.join(root, d)
+            dir_name = env.from_string(d).render(
+                IN=template_dir, OUT=output_dir,
+                **kwargs)
+            dir_names.append(dir_name)
+            if dir_name != d:
+                shutil.move(dir_path, os.path.join(root, dir_name))
+        dirs[:] = dir_names

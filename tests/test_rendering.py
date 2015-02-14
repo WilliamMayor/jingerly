@@ -1,4 +1,3 @@
-import os
 import unittest
 import shutil
 
@@ -32,12 +31,6 @@ class TestAll(unittest.TestCase):
         except IOError:
             self.fail('File not created: %s' % actual)
 
-    def assertFoldersEqual(self, expected, actual):
-        expected_name = os.path.basename(expected)
-        actual_name = os.path.basename(actual)
-        self.assertEqual(
-            actual_name, expected_name, 'Folder names differed')
-
     def test_untouched(self):
         self.assertFilesEqual(
             'tests/expected/all/untouched.txt',
@@ -57,3 +50,8 @@ class TestAll(unittest.TestCase):
         self.assertFilesEqual(
             'tests/expected/all/file_with_actual.txt',
             'tests/actual/all/file_with_actual.txt')
+
+    def test_rename_folder(self):
+        self.assertFilesEqual(
+            'tests/expected/all/folder_with_actual/expected.txt',
+            'tests/actual/all/folder_with_actual/expected.txt')

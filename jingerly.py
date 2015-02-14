@@ -12,6 +12,11 @@ ALLOWED_TYPES = [
 
 
 def __walk(root, ignore):
+    """Replicates :func:`os.walk` but filters out any files or folders whose name is found in *ignore*.
+
+    :param string root: path of the directory to start walking from
+    :param list ignore: list of file/folder names to ignore
+    """
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = filter(lambda dn: dn not in ignore, dirnames)
         filenames = filter(lambda fn: fn not in ignore, filenames)

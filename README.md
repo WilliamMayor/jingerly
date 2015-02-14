@@ -1,4 +1,6 @@
 # jingerly
+[![Build Status](https://travis-ci.org/WilliamMayor/jingerly.svg?branch=master)](https://travis-ci.org/WilliamMayor/jingerly)
+[![Latest Docs](https://readthedocs.org/projects/jingerly/badge/?version=latest)](http://jingerly.readthedocs.org/en/latest/)
 Project templating using Jinja2.
 
 Easily create a blank project skeleton from a project template using the following features:

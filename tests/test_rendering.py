@@ -7,6 +7,10 @@ import jingerly
 
 class TestAll(unittest.TestCase):
 
+    def __init__(self, *args, **kwargs):
+        super(TestAll, self).__init__(*args, **kwargs)
+        self.addCleanup(self.cleanUp)
+
     def setUp(self):
         jingerly.render(
             'tests/template/all',
@@ -14,7 +18,7 @@ class TestAll(unittest.TestCase):
             name='actual',
             known='this is known')
 
-    def tearDown(self):
+    def cleanUp(self):
         shutil.rmtree('tests/actual/all')
 
     def assertFilesEqual(self, expected, actual):
@@ -24,7 +28,7 @@ class TestAll(unittest.TestCase):
             with open(actual, 'rb') as fd:
                 actual_contents = fd.read()
             self.assertEqual(
-                actual_contents, expected_contents, 'File contants differed')
+                actual_contents, expected_contents)
         except IOError:
             self.fail('File not created: %s' % actual)
 
@@ -38,3 +42,13 @@ class TestAll(unittest.TestCase):
         self.assertFilesEqual(
             'tests/expected/all/untouched.txt',
             'tests/actual/all/untouched.txt')
+
+    def test_known_variables(self):
+        self.assertFilesEqual(
+            'tests/expected/all/known_variables.txt',
+            'tests/actual/all/known_variables.txt')
+
+    def test_unknown_variables(self):
+        self.assertFilesEqual(
+            'tests/expected/all/unknown_variables.txt',
+            'tests/actual/all/unknown_variables.txt')

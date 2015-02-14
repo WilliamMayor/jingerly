@@ -61,3 +61,8 @@ class TestAll(unittest.TestCase):
         self.assertFilesEqual(
             'tests/expected/all/copy_file.txt',
             'tests/actual/all/copy_file.txt')
+
+    def test_download_filter(self):
+        self.assertFilesEqual(
+            'tests/expected/all/download_file.txt',
+            'tests/actual/all/download_file.txt')

@@ -1,6 +1,7 @@
 import os
 import shutil
 
+import requests
 from jinja2 import Environment, DebugUndefined
 
 
@@ -12,15 +13,18 @@ def __walk(root, ignore):
 
 
 def __filter_copy(path):
-    print path
     with open(path, 'rb') as fd:
         return fd.read()
+
+
+def __filter_download(url):
+    return requests.get(url).content
 
 
 def __make_env():
     env = Environment(undefined=DebugUndefined)
     env.filters['copy'] = __filter_copy
-    env.filters['download'] = lambda p: p
+    env.filters['download'] = __filter_download
     return env
 
 

@@ -34,7 +34,7 @@ if __name__ == '__main__':
         for name in jingerly.find_variables(namespace.TEMPLATE_DIR):
             if name not in d:
                 value = raw_input(
-                    'Value for %s (leave blank for nothing): ' % name)
+                    'Value for %s (leave blank to ignore): ' % name)
                 if value:
                     try:
                         value = ast.literal_eval(value)

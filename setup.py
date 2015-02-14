@@ -15,7 +15,9 @@ setup(
     license="MIT",
     keywords="project management template",
     url="https://github.com/WilliamMayor/jingerly",
-    packages=['jingerly', 'tests'],
+    py_modules=['jingerly'],
+    requires=['jinja2', 'requests'],
+    scripts=['bin/jingerly'],
     long_description=read('README.md'),
     classifiers=[
         "Development Status :: 3 - Alpha",

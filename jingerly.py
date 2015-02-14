@@ -1,9 +1,14 @@
+import imp
 import subprocess
 import os
 import shutil
 
 import requests
-from jinja2 import Environment, DebugUndefined
+from jinja2 import Environment, DebugUndefined, meta
+
+ALLOWED_TYPES = [
+    type(True), type(0), type(0.0), type(0l), type(0+0j), type(''), type(u''),
+    type([]), type((1,)), type(set()), type({})]
 
 
 def __walk(root, ignore):
@@ -29,10 +34,26 @@ def __make_env():
     return env
 
 
-def __make_renderer(env, template_dir, output_dir, kwargs):
+def __make_variables(template_dir, output_dir, kwargs):
+    variables = kwargs.copy()
+    variables['IN'] = template_dir
+    variables['OUT'] = output_dir
+    env_path = os.path.join(template_dir, 'jingerly.env')
+    if os.path.isfile(env_path):
+        env = imp.load_source('module.name', env_path)
+        for name in dir(env):
+            if name.startswith('__'):
+                continue
+            attr = getattr(env, name)
+            if type(attr) in ALLOWED_TYPES:
+                variables[name] = attr
+    return variables
+
+
+def __make_renderer(env, variables):
     def renderer(text):
         template = env.from_string(text)
-        return template.render(IN=template_dir, OUT=output_dir, **kwargs)
+        return template.render(**variables)
     return renderer
 
 
@@ -60,32 +81,40 @@ def __process_dirs(root, dirs, renderer):
     return dir_names
 
 
-def __run_script_and_delete(script_path, renderer):
+def __run_script(script_path, renderer):
     if os.path.isfile(script_path):
         with open(script_path, 'rb') as fd:
             file_contents = renderer(fd.read())
         with open(script_path, 'wb') as fd:
             fd.write(file_contents)
         subprocess.call(script_path)
-        os.remove(script_path)
 
 
 def __run_pre(output_dir, renderer):
     script_path = os.path.join(output_dir, 'jingerly.pre')
-    __run_script_and_delete(script_path, renderer)
+    __run_script(script_path, renderer)
 
 
 def __run_post(output_dir, renderer):
     script_path = os.path.join(output_dir, 'jingerly.post')
-    __run_script_and_delete(script_path, renderer)
+    __run_script(script_path, renderer)
+
+
+def __clean(path):
+    for name in ['jingerly.pre', 'jingerly.post', 'jingerly.env']:
+        try:
+            os.remove(os.path.join(path, name))
+        except OSError:
+            pass
 
 
 def render(template_dir, output_dir, _ignore=None, **kwargs):
+    shutil.copytree(template_dir, output_dir)
     if _ignore is None:
         _ignore = ['.DS_Store', '.git']
     env = __make_env()
-    renderer = __make_renderer(env, template_dir, output_dir, kwargs)
-    shutil.copytree(template_dir, output_dir)
+    variables = __make_variables(template_dir, output_dir, kwargs)
+    renderer = __make_renderer(env, variables)
     __run_pre(output_dir, renderer)
     for root, dirs, files in __walk(output_dir, _ignore):
         __process_files(
@@ -93,3 +122,23 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
         dirs[:] = __process_dirs(
             root, dirs, renderer)
     __run_post(output_dir, renderer)
+    __clean(output_dir)
+
+
+def find_variables(template_dir, _ignore=None):
+    if _ignore is None:
+        _ignore = ['.DS_Store', '.git', 'jingerly.env']
+    env = __make_env()
+    known = __make_variables(template_dir, template_dir, {})
+    unknown = set()
+    for root, dirs, files in __walk(template_dir, _ignore):
+        for f in files:
+            ast = env.parse(f)
+            unknown |= meta.find_undeclared_variables(ast)
+            with open(os.path.join(root, f), 'rb') as fd:
+                ast = env.parse(fd.read())
+                unknown |= meta.find_undeclared_variables(ast)
+        for d in dirs:
+            ast = env.parse(d)
+            unknown |= meta.find_undeclared_variables(ast)
+    return filter(lambda n: n not in known, unknown)

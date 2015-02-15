@@ -83,7 +83,11 @@ def __process_files(root, files, renderer):
         file_path = os.path.join(root, f)
         file_name = renderer(f)
         with open(file_path, 'rb') as fd:
-            file_contents = renderer(fd.read())
+            try:
+                file_contents = renderer(fd.read())
+            except UnicodeDecodeError as ude:
+                print file_path
+                raise ude
         if file_name != f:
             os.remove(file_path)
             file_path = os.path.join(root, file_name)

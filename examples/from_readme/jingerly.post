@@ -1,0 +1,7 @@
+#! /bin/bash
+
+virtualenv {{ OUT }}/venv
+. {{ OUT }}/venv/bin/activate
+pip install --upgrade pip
+pip install flask
+pip freeze > {{ OUT }}/requirements.txt

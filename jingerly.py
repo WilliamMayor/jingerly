@@ -67,7 +67,11 @@ def __make_renderer(env, variables):
     """Returns a function that takes some text and creates and renders a template from it using *env* and *variables*
     """
     def renderer(text):
-        template = env.from_string(text)
+        try:
+            template = env.from_string(text)
+        except UnicodeDecodeError as ude:
+            print text
+            raise ude
         return template.render(**variables)
     return renderer
 

@@ -1,2 +1,0 @@
-This project template can be found in tests/template/all
-It was rendered in tests/actual/all

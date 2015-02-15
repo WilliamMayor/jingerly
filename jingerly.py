@@ -149,6 +149,8 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
     5. Run `jingerly.post`
     6. Clean up any jingerly specific files
     """
+    template_dir = os.path.abspath(template_dir)
+    output_dir = os.path.abspath(output_dir)
     shutil.copytree(template_dir, output_dir)
     if _ignore is None:
         _ignore = ['.DS_Store', '.git']
@@ -170,6 +172,7 @@ def find_variables(template_dir, _ignore=None):
     *template_dir* returning a list of all of the variables. This is used
     for the interactive feature of the CLI.
     """
+    template_dir = os.path.abspath(template_dir)
     if _ignore is None:
         _ignore = ['.DS_Store', '.git', 'jingerly.env']
     env = __make_env()

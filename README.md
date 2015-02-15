@@ -110,7 +110,7 @@ You might want to copy a file in from somewhere else.
 
 `.gitignore`:
 
-    {{ OUT + "/../gitignore" | copy }}
+    {{ (IN + "/../gitignore") | copy }}
 
 ### With Custom Scripts
 

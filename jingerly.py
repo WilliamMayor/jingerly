@@ -67,11 +67,7 @@ def __make_renderer(env, variables):
     """Returns a function that takes some text and creates and renders a template from it using *env* and *variables*
     """
     def renderer(text):
-        try:
-            template = env.from_string(text)
-        except UnicodeDecodeError as ude:
-            print text
-            raise ude
+        template = env.from_string(text)
         return template.render(**variables)
     return renderer
 
@@ -83,11 +79,7 @@ def __process_files(root, files, renderer):
         file_path = os.path.join(root, f)
         file_name = renderer(f)
         with open(file_path, 'rb') as fd:
-            try:
-                file_contents = renderer(fd.read())
-            except UnicodeDecodeError as ude:
-                print file_path
-                raise ude
+            file_contents = renderer(fd.read())
         if file_name != f:
             os.remove(file_path)
             file_path = os.path.join(root, file_name)
@@ -153,14 +145,12 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
     """
     shutil.copytree(template_dir, output_dir)
     if _ignore is None:
-        _ignore = ['.DS_Store', '.git', 'jingerly.envc']
+        _ignore = ['.DS_Store', '.git']
     env = __make_env()
     variables = __make_variables(template_dir, output_dir, kwargs)
     renderer = __make_renderer(env, variables)
     __run_pre(output_dir, renderer)
     for root, dirs, files in __walk(output_dir, _ignore):
-        for f in files:
-            print os.path.join(root, f)
         __process_files(
             root, files, renderer)
         dirs[:] = __process_dirs(

@@ -16,7 +16,8 @@ class TestAll(unittest.TestCase):
             'tests/template/all',
             'tests/actual/all',
             name='actual',
-            known='this is known')
+            known='this is known',
+            _ignore=['.DS_Store', '.git', 'jingerly.envc'])
 
     def cleanUp(self):
         try:
@@ -81,8 +82,11 @@ class TestAll(unittest.TestCase):
             'tests/actual/all/made_in_post')
 
     def test_every_file(self):
+        ignore = ['jingerly.envc']
         for root, dirs, files in os.walk('tests/expected/all'):
             for f in files:
+                if f in ignore:
+                    continue
                 self.assertFilesEqual(
                     os.path.join(root, f),
                     os.path.join(
@@ -90,6 +94,8 @@ class TestAll(unittest.TestCase):
                         f))
         for root, dirs, files in os.walk('tests/actual/all'):
             for f in files:
+                if f in ignore:
+                    continue
                 self.assertTrue(os.path.isfile(
                     os.path.join(
                         root.replace('tests/actual/all', 'tests/expected/all'),

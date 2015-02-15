@@ -153,12 +153,14 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
     """
     shutil.copytree(template_dir, output_dir)
     if _ignore is None:
-        _ignore = ['.DS_Store', '.git']
+        _ignore = ['.DS_Store', '.git', 'jingerly.envc']
     env = __make_env()
     variables = __make_variables(template_dir, output_dir, kwargs)
     renderer = __make_renderer(env, variables)
     __run_pre(output_dir, renderer)
     for root, dirs, files in __walk(output_dir, _ignore):
+        for f in files:
+            print os.path.join(root, f)
         __process_files(
             root, files, renderer)
         dirs[:] = __process_dirs(

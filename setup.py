@@ -27,4 +27,5 @@ setup(
         'Natural Language :: English',
         'Topic :: Software Development :: Code Generators'
     ],
+    include_package_data=True
 )

@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name="jingerly",
-    version="0.0.2",
+    version="0.0.3",
     author="William Mayor",
     author_email="jinjerly@williammayor.co.uk",
     description=("Project templating using Jinja2."),
@@ -27,4 +27,5 @@ setup(
         'Natural Language :: English',
         'Topic :: Software Development :: Code Generators'
     ],
+    include_package_data=True
 )

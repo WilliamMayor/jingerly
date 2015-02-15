@@ -65,7 +65,7 @@ If you don't want to list your variable names and values on the command line you
 
 ### With Pre-Defined Variable Values
 
-If you create a file called `jingerly.env` in your project template then jingerly will automatically pick up the values you define inside it.
+If you create a file called `jingerly.env` in your project template then jingerly will automatically pick up the values you define inside it. It's read in as a Python file so your variable definitions must be in the Pythyon syntax.
 
     web/
         {{project_name}}/
@@ -75,8 +75,8 @@ If you create a file called `jingerly.env` in your project template then jingerl
 
 `jingerly.env`:
 
-    project_name = nbt
-    short_desc = It's going to be awesome
+    project_name = 'nbt'
+    short_desc = "It's going to be awesome"
 
 ### With Files Downloaded from the Internet
 
@@ -110,7 +110,7 @@ You might want to copy a file in from somewhere else.
 
 `.gitignore`:
 
-    {{ "/Users/me/templates/gitignore" | copy }}
+    {{ OUT + "/../gitignore" | copy }}
 
 ### With Custom Scripts
 
@@ -132,7 +132,7 @@ jingerly also lets you define some scripts to be run when you create a new proje
     #! /bin/bash
 
     virtualenv {{ OUT }}/venv
-    . venv/bin/activate
+    . {{ OUT }}/venv/bin/activate
     pip install --upgrade pip
     pip install flask
     pip freeze > {{ OUT }}/requirements.txt
@@ -181,4 +181,4 @@ From here you can run the tests using nose:
 
 ## Examples
 
-There's a whole load of examples in the examples directory of this repo.
+There's an example in the examples directory that demonstrates the features mentioned in this README.

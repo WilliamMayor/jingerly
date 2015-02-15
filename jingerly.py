@@ -12,7 +12,8 @@ ALLOWED_TYPES = [
 
 
 def __walk(root, ignore):
-    """Replicates :func:`os.walk` but filters out any files or folders whose name is found in *ignore*.
+    """Replicates :func:`os.walk` but filters out any files or folders
+    whose name is found in *ignore*.
     """
     for dirpath, dirnames, filenames in os.walk(root):
         dirnames[:] = filter(lambda dn: dn not in ignore, dirnames)
@@ -34,8 +35,10 @@ def __filter_download(url):
 
 
 def __make_env():
-    """Creates a :class:`jinja2.Environment` and prepares it to be used by jingerly.
-    We use a :class:`jinja2.DebugUndefined` undefined object so that when template variables are not provided they are left alone. This means we can use jingerly to template projects that use Jinja2
+    """Creates a :class:`jinja2.Environment` and prepares it to be used by
+    jingerly. We use a :class:`jinja2.DebugUndefined` undefined object so that
+    when template variables are not provided they are left alone. This means we
+     can use jingerly to template projects that use Jinja2
     """
     env = Environment(undefined=DebugUndefined)
     env.filters['copy'] = __filter_copy
@@ -45,8 +48,8 @@ def __make_env():
 
 def __make_variables(template_dir, output_dir, kwargs):
     """Returns a dictionary of the variables that will be passed into the template.
-    Combines *template_dir* and *output_dir* with *kwargs* as 'IN' and 'OUT' repectively.
-    Then processes *output_dir/jingerly.env* (if it exists).
+    Combines *template_dir* and *output_dir* with *kwargs* as 'IN' and 'OUT'
+    repectively. Then processes *output_dir/jingerly.env* (if it exists).
     """
     variables = kwargs.copy()
     variables['IN'] = template_dir
@@ -64,7 +67,8 @@ def __make_variables(template_dir, output_dir, kwargs):
 
 
 def __make_renderer(env, variables):
-    """Returns a function that takes some text and creates and renders a template from it using *env* and *variables*
+    """Returns a function that takes some text and creates and renders a
+    template from it using *env* and *variables*
     """
     def renderer(text):
         template = env.from_string(text)
@@ -73,7 +77,8 @@ def __make_renderer(env, variables):
 
 
 def __process_files(root, files, renderer):
-    """Pass the contents of each file in *files* to *renderer*, changes the file name if needed.
+    """Pass the contents of each file in *files* to *renderer*, changes the
+    file name if needed.
     """
     for f in files:
         file_path = os.path.join(root, f)
@@ -133,9 +138,10 @@ def __clean(path):
 
 
 def render(template_dir, output_dir, _ignore=None, **kwargs):
-    """:func:`jingerly.__walk` through every file and directory in *template_dir*, render it using variable values in *kwargs*, and save the output in *output_dir*.
-    The order things happen in is:
-    
+    """:func:`jingerly.__walk` through every file and directory in
+    *template_dir*, render it using variable values in *kwargs*, and save the
+    output in *output_dir*. The order things happen in is:
+
     1. Copy entire template to output directory
     2. Read variables from `jingerly.env`
     3. Run `jingerly.pre`
@@ -143,6 +149,8 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
     5. Run `jingerly.post`
     6. Clean up any jingerly specific files
     """
+    template_dir = os.path.abspath(template_dir)
+    output_dir = os.path.abspath(output_dir)
     shutil.copytree(template_dir, output_dir)
     if _ignore is None:
         _ignore = ['.DS_Store', '.git']
@@ -160,9 +168,11 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
 
 
 def find_variables(template_dir, _ignore=None):
-    """:func:`jingerly.__walk` through every file and directory in *template_dir* returning a list of all of the variables.
-    This is used for the interactive feature of the CLI.
+    """:func:`jingerly.__walk` through every file and directory in
+    *template_dir* returning a list of all of the variables. This is used
+    for the interactive feature of the CLI.
     """
+    template_dir = os.path.abspath(template_dir)
     if _ignore is None:
         _ignore = ['.DS_Store', '.git', 'jingerly.env']
     env = __make_env()

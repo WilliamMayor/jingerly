@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name="jingerly",
-    version="0.0.3",
+    version="0.0.4",
     author="William Mayor",
     author_email="jinjerly@williammayor.co.uk",
     description=("Project templating using Jinja2."),

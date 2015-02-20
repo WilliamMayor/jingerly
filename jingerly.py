@@ -1,3 +1,4 @@
+import stat
 import imp
 import subprocess
 import os
@@ -113,6 +114,8 @@ def __run_script(script_path, renderer):
             file_contents = renderer(fd.read())
         with open(script_path, 'wb') as fd:
             fd.write(file_contents)
+        st = os.stat(script_path)
+        os.chmod(script_path, st.st_mode | stat.S_IEXEC)
         subprocess.call(script_path)
 
 

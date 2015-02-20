@@ -4,7 +4,7 @@ import os
 import shutil
 
 import requests
-from jinja2 import Environment, DebugUndefined, meta
+from jinja2 import FileSystemLoader, Environment, DebugUndefined, meta
 
 ALLOWED_TYPES = [
     type(True), type(0), type(0.0), type(0l), type(0+0j), type(''), type(u''),
@@ -34,13 +34,14 @@ def __filter_download(url):
     return requests.get(url).content
 
 
-def __make_env():
+def __make_env(template_dir):
     """Creates a :class:`jinja2.Environment` and prepares it to be used by
     jingerly. We use a :class:`jinja2.DebugUndefined` undefined object so that
     when template variables are not provided they are left alone. This means we
      can use jingerly to template projects that use Jinja2
     """
     env = Environment(undefined=DebugUndefined)
+    env.loader = FileSystemLoader(template_dir)
     env.filters['copy'] = __filter_copy
     env.filters['download'] = __filter_download
     return env
@@ -154,7 +155,7 @@ def render(template_dir, output_dir, _ignore=None, **kwargs):
     shutil.copytree(template_dir, output_dir)
     if _ignore is None:
         _ignore = ['.DS_Store', '.git']
-    env = __make_env()
+    env = __make_env(template_dir)
     variables = __make_variables(template_dir, output_dir, kwargs)
     renderer = __make_renderer(env, variables)
     __run_pre(output_dir, renderer)
@@ -175,7 +176,7 @@ def find_variables(template_dir, _ignore=None):
     template_dir = os.path.abspath(template_dir)
     if _ignore is None:
         _ignore = ['.DS_Store', '.git', 'jingerly.env']
-    env = __make_env()
+    env = __make_env(template_dir)
     known = __make_variables(template_dir, template_dir, {})
     unknown = set()
     for root, dirs, files in __walk(template_dir, _ignore):
